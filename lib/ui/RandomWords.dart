@@ -16,6 +16,9 @@ class RandomWordsState extends State<RandomWords> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Startup Name Generator.'),
+        actions: <Widget>[
+          new IconButton(icon: const Icon(Icons.list), onPressed: _pushSaved)
+        ],
       ),
       body: _buildSuggestions(),
     );
@@ -36,7 +39,7 @@ class RandomWordsState extends State<RandomWords> {
     );
   }
 
-  Widget _buildRow(WordPair wPair) {
+  Widget _buildRow(final WordPair wPair) {
     final alreadySaved = _saved.contains(wPair);
     return ListTile(
       title: Text(wPair.asPascalCase, style: _biggerFont),
@@ -53,5 +56,28 @@ class RandomWordsState extends State<RandomWords> {
         });
       },
     );
+  }
+
+  void _pushSaved() {
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
+      final tiles = _saved.map((p) {
+        return ListTile(
+          title: Text(
+            p.asPascalCase,
+            style: _biggerFont,
+          ),
+        );
+      });
+      final divided =
+          ListTile.divideTiles(context: context, tiles: tiles).toList();
+      return new Scaffold(
+        appBar: AppBar(
+          title: const Text('Saved suggestions'),
+        ),
+        body: ListView(
+          children: divided,
+        ),
+      );
+    }));
   }
 }
